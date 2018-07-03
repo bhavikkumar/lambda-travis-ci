@@ -63,6 +63,7 @@ Resources:
               - 'lambda:ListFunctions'
               - 'lambda:CreateEventSourceMapping'
               - 'lambda:ListEventSourceMappings'
+              - 'lambda:UpdateEventSourceMapping'
             Resource: '*'
           - Effect: Allow
             Action:
