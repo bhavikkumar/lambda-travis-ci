@@ -1,0 +1,92 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  Lambda used for testing Travis-CI DPL changes
+
+Resources:
+  LambdaQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 14400
+      ReceiveMessageWaitTimeSeconds: 10
+
+  LambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole'
+
+  LambdaPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: 'lambda-ticker-processor-policy'
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'sqs:ChangeMessageVisibility'
+              - 'sqs:DeleteMessage'
+              - 'sqs:GetQueueAttributes'
+              - 'sqs:ReceiveMessage'
+            Resource:
+              - !GetAtt LambdaQueue.Arn
+      Roles:
+        - !Ref LambdaRole
+
+  BuildUser:
+    Type: "AWS::IAM::User"
+
+  BuildUserPolicy:
+    Type: 'AWS::IAM::Policy'
+    DependsOn: BuildUser
+    Properties:
+      PolicyName: !Sub '${AWS::StackName}-BuildUser-Policy'
+      Users:
+        - !Ref BuildUser
+      PolicyDocument:
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - 'iam:ListRolePolicies'
+              - 'iam:ListRoles'
+              - 'lambda:CreateFunction'
+              - 'lambda:ListFunctions'
+              - 'lambda:CreateFunction'
+              - 'lambda:ListFunctions'
+              - 'lambda:CreateEventSourceMapping'
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - 'lambda:GetFunction'
+              - 'lambda:UpdateFunctionCode'
+              - 'lambda:UpdateFunctionConfiguration'
+              - 'lambda:TagResource'
+            Resource:
+              - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:lambda-travis-ci'
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource:
+              - !GetAtt LambdaRole.Arn
+
+  BuildCredentials:
+    Type: 'AWS::IAM::AccessKey'
+    DependsOn: BuildUser
+    Properties:
+      UserName: !Ref BuildUser
+
+Outputs:
+  AccessKeyBuildUser:
+    Description: 'The access key for the build user'
+    Value: !Ref BuildCredentials
+  SecretAccessKeyBuildUser:
+    Description: 'The secret access key for build user'
+    Value: !GetAtt BuildCredentials.SecretAccessKey

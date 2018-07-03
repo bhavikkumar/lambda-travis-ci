@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+- '8'
+after_success:
+- npm prune --production
+- cd src
+- zip -r -D ../deploy.zip .
+- cd ..
+deploy:
+  provider: lambda
+  edge:
+    source: bhavikkumar/dpl
+    branch: lambda-event-source
+  access_key_id:
+    secure: LblybmNAW5k8xwwUwyiJjb9aD5dnxown3yAA53/I5o6saLFRV3ylk1DhgnX1wm76w/btryP60WSmA6xH8ngosP7y5o2Z2owQIu+yfROu0+aHwibStZOkSMevQClg3FmsiRoyum8YWngGfG9Z1s0Bl/1z19ZZmrV20mtuIszaTXcJtUBUctnGsCcKSqvxoaCxnOs0L1RqcdsD/np6UP6XmscV2KfJztmuBMJ5VNhHKgqATolV6pJBsWa8IUAEyHNgsdJUkZIyMqZjoVvwJ5GEbqpQGSb7P+Gbq1oBVqM3YoRIpbQ6EUxs5W8c1ob3SRBlCK+35BPFmWcTeiveQ6TCHle6Wi+nBTyXpPSgtwTELl6lsQYfKTIcRJwsyiP+OVANt8hMhqph8dI2G301KhMfsh4T9VeNk+q1FY5BRD2acpuVf6kyOKq1aCwrr/B6Bmi3oosagc0f4mW2cd5uf+iNJs8a0q1Xuk0Mx3qi3LohNWhZI/BJr1tvxj92B0n43JrU4lIOVyL2g5zH29R4wk9L0dAaqTNgdl5W1AycntBIa+w3Jj2I6zYGL7tcqAM0b9ZSndzD7PRDFjE4kbcuZIxFJl67vWexHs0uRtz9LoghECcGGb6ik6hiKJGGu17u3otgj37QgGNmev6LCpxfruNaSG9aeGr74aS+LUeWu/IzUhg=
+  secret_access_key:
+    secure: kWcXXsD+RKolFVbCqfNAz1UWr1xUnd9uPaST7I2gieHgfdhfauyS6vptnx+0PrFWc+FOCliqOxOFq0zM0gnAfl1O1EcG1aYB1+p2rlWMPMcTzXtncTIK60IdvD9yzZMFfNNAPgJV/L1TEHz4e8iDlHq4KNEdO05tnzjfiaN+EQ7QFeMefblGZsxEToTcvghslwPtQxsMZVJr6CQMtxFpMlMwsx0Ov4U3AvYcUv4oB/NP1x71T0SJVOOeV5wdrbOzBGzJ7VTzoLA9sX1z/mDRP5sBj+4LyXriWytZXvzCok9yECGhz5S+rIAT9srdHdT3fV8YGL6x+4gcqqqRKajA4feT7lhfSqMMlLonekvAEbBqKDJes3PWoiLroyrO/ZfnkithJmdPFSxR6/0Copfp5Emxi0ktoTD85fItCzzXywF+C4bXFKUOQVhcYFqP0NpRww88+2uibwUNXo6+PgKMjtrqQSaLuR6nhdGKokaDtiSWhcf7yYWpm9bouTp+cTPnaCJGKV7k7qsHhjRNXhZce6Ru1T8o9KWmbWvVOEI9B3f3Gl0zN+7OwPbzsfsGLoGnL7v3VTgSFX0BdFlxeLRCN9pdy+oEHFJQyIEVfSNg+UcLVcTyuCrUOPJO28ItVvx9+z8Ojq2Ou8/FvhoArpyYGBHeAZzC/7TrVZUqrBP8TBM=
+  function_name: lambda-travis-ci
+  region: us-west-2
+  handler_name: handler
+  module_name: index
+  runtime: nodejs8.10
+  publish: true
+  zip: deploy.zip
+  role:
+    secure: WlFGr/8zIbKKYHJPEgxMwfEC1sAE2U8ZNg9pwQUG55WgCZ8DZEDcvNXqczTOkerdO9V4FWen6IH55sclbj5xsKDutKQfaW/N+UKPRjVl9w9+PtMcsyCnN32U7JvHgtg3VKeRWXDjXUjw61MY1cF25sJo7sISsakCWOMDXLq5adnxp0v9BsIvi7O1X/lc9rBRByGGFPHi8drmcqGh8Q7Bbn7mwrkPivv+A+/6yIVW37iNDCxsUVc0f0YcoZDXTvbMLO1xR+bk17SJBJNR1y2w2x6PeTE3z9cfNcIeCwWNyRHoelS3ne7sevqsg/b431jp+YQPrGHnuJBFFpslxC1A+qO6zymAjLht/kpJJD4/zRa2uX6KeW0k6U/V+y2X4RIOvLs1mArGdvwpZe3qVIlMrpgFo31oocQ+ke3c2oiUDpUdcsvJYGWnj8Clo5rWrPCS2bf3t0PnG/T5tgYDEo3nnlJvOBud/VN5FmKlA0aZRJ5/Y3gTn8Jvwa03qPpIcM9Bj9T1/sagrVkGW+lnqWxfVlhXfGzwE8e9UdjfgjGE7esniy7VT1QmGRXbVrCJMabU2bTCEZlzTFyMblAFwcD5FlZzM/2mPL3t1EgAiPVMPa69bxPoyRoDhWc7N/i4HCtrH7OakxQyaM+SJb3XJa3Kjxm8d+GNewDjToIK5K73LpY=
+  timeout: 60
