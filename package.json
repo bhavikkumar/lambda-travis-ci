@@ -1,0 +1,23 @@
+{
+  "name": "lambda-travis-ci",
+  "version": "1.0.0",
+  "description": "Simple lambda function for testing Travis-CI DPL changes",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^23.2.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhavikkumar/lambda-travis-ci.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bhavikkumar/lambda-travis-ci/issues"
+  },
+  "homepage": "https://github.com/bhavikkumar/lambda-travis-ci#readme"
+}
